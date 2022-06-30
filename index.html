@@ -89,6 +89,7 @@
                             "Density: " + density.toFixed(0) + " / km<sup>2</sup>"
                         )
                     },
+                    // highlight feature on mouse over
                     style: (feature) => {
                         var area = turf.area(feature.geometry);
                         var area_km = area / 1000000;
@@ -101,10 +102,37 @@
                             weight: 1,
                             opacity: 1,
                             color: 'white',
-                            dashArray: '3',
+                            dashArray: '1',
                             fillOpacity: 0.9
                         };
                     }
+                });
+                // layer on hover outline feature
+                geojson.eachLayer(function (layer) {
+                    layer.on({
+                        mouseover: function (e) {
+                            this.openPopup();
+                            this.setStyle({
+                                weight: 2,
+                                color: '#666',
+                                dashArray: '',
+                                fillOpacity: 0.2
+                            });
+                            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                this.bringToFront();
+                            }
+                        },
+                        mouseout: function (e) {
+                            this.closePopup();
+                            this.setStyle({
+                                weight: 1,
+                                opacity: 1,
+                                color: 'white',
+                                dashArray: '1',
+                                fillOpacity: 0.9
+                            });
+                        }
+                    });
                 });
                 var legend = L.control({ position: 'bottomright' });
                 legend.onAdd = function (map) {
